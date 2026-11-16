@@ -30,17 +30,17 @@ while [[ "$(getprop sys.boot_completed)" != "1" ]];
     do sleep 5
 done
 
-for cmd in grep dumpsys logcat read printf echo sleep sed setsid wc kill cut mv settings; 
+for cmd in grep dumpsys logcat read sed setsid wc kill cut mv rm am cat settings tail;
     do command -v "$cmd" >/dev/null 2>&1 || MISSING="$MISSING $cmd"
 done
 
-if [[ ! -f $LOGFILE ]]; 
-    then : >> "$LOGFILE"
-fi
 if [[ -n "$MISSING" ]];
     then
         log "- required command(s) missing: $MISSING. please install busybox/toybox."
         exit 1
+fi
+if [[ ! -f $LOGFILE ]]; 
+    then : >> "$LOGFILE"
 fi
 if [[ ! -f $WATCHLIST ]]; 
     then : >> "$WATCHLIST"
