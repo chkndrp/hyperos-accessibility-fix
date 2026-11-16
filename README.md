@@ -72,5 +72,4 @@ So be careful at what you enable
 
 ## Requirements
 - HyperOS 1.0+ (or any A14+ system)
-- KernelSU 1.0.2+
-- Magisk 28.0+
+- KernelSU 1.0.2+ or Magisk 28.0+
