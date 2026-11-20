@@ -67,7 +67,7 @@ It's also more minimal this way, having no requirements at all.
 So be careful at what you enable
 
 ## Installation:
-* [Download the module archive here](https://github.com/chkndrp/hyperos-accessibility-fix/releases/latest/download/hyperos-accessibility-fix.zip)
+* [Download the module archive here](https://github.com/chkndrp/hyperos-accessibility-fix/releases/latest/download/hyperos-accessibility-fix.zip). There is also a [mirror at SourceForge](https://sourceforge.net/projects/hyperos-accessibility-fix/)
 * Flash it in magisk app, or using command line
 
 ## Requirements
