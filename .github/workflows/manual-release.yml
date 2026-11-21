@@ -1,0 +1,81 @@
+name: Package and release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Prepare release package and notes
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="$(awk -F= '$1 == "version" { print $2 }' module.prop)"
+          if [[ ! "$version" =~ ^[0-9]+([.][0-9]+)*$ ]]; then
+            echo "Invalid or missing version in module.prop: $version" >&2
+            exit 1
+          fi
+
+          archive="hyperos-accessibility-fix-${version}.zip"
+          zip -r "$RUNNER_TEMP/$archive" . \
+            -x './.git' './.git/*' \
+               './.github' './.github/*' \
+               './.shellcheckrc' './.gitignore' './.gitattributes'
+          cp "$RUNNER_TEMP/$archive" "$RUNNER_TEMP/hyperos-accessibility-fix.zip"
+
+          awk -v version="$version" '
+            $0 == "# " version { found = 1; next }
+            found && /^# / { exit }
+            found { print }
+          ' CHANGELOG.md > "$RUNNER_TEMP/changelog.md"
+
+          if ! grep -q '[^[:space:]]' "$RUNNER_TEMP/changelog.md"; then
+            echo "No changelog entries found for version $version" >&2
+            exit 1
+          fi
+
+          {
+            printf '##  Changelog:\n'
+            cat "$RUNNER_TEMP/changelog.md"
+            cat <<'NOTES'
+
+          ## Installation:
+          * [Download the module archive here](https://github.com/chkndrp/hyperos-accessibility-fix/releases/latest/download/hyperos-accessibility-fix.zip). There is also a [mirror at SourceForge](https://sourceforge.net/projects/hyperos-accessibility-fix/)
+          * Flash it in magisk app, or using command line
+
+          ## Download hint:
+          NOTES
+          printf '✅ `hyperos-accessibility-fix-%s.zip` ✅\n' "$version"
+          cat <<'NOTES'
+          ❌ `xx source code.zip` ❌
+
+          ---
+
+          [![Donate](https://img.shields.io/badge/Donate-006400?logo=ko-fi&logoColor=white)](https://ko-fi.com/chkndrp) [![GitHub Releases](https://img.shields.io/github/downloads/chkndrp/hyperos-accessibility-fix/total?style=flat&logo=github&labelColor=black&color=black)](https://github.com/chkndrp/hyperos-accessibility-fix/releases) [![SourceForge Downloads](https://img.shields.io/sourceforge/dt/hyperos-accessibility-fix?style=flat&logo=sourceforge&labelColor=black&color=black)](https://sourceforge.net/projects/hyperos-accessibility-fix/files)
+
+          NOTES
+          } > "$RUNNER_TEMP/release-notes.md"
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.package.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: ${{ steps.package.outputs.version }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          files: |
+            ${{ runner.temp }}/${{ steps.package.outputs.archive }}
+            ${{ runner.temp }}/hyperos-accessibility-fix.zip
+          make_latest: true
