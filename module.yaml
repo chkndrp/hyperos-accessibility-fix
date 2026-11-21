@@ -13,4 +13,4 @@ authors:
 compatibility:
   androidMinApi: 34
 release:
-  assetPattern: "hyperos-accessibility-fix*.zip"
+  assetPattern: "hyperos-accessibility-fix-*.zip"
