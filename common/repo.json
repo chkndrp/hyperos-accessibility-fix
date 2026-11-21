@@ -1,6 +1,6 @@
 {
     "support": "https://github.com/chkndrp/hyperos-accessibility-fix/issues",
-    "license": "GPL-2.0",
+    "license": "GPL-2.0-only",
     "root": {
         "kernelsu": ">= 1.0.2",
         "magisk": ">= 28.0"

@@ -3,7 +3,7 @@ id: hyperos-accessibility-fix
 name: HyperOS Accessibility Fix
 summary: Stop HyperOS from randomly disabling accessibillity services
 description: README.md
-license: GPL-2.0
+license: GPL-2.0-only
 homepage: https://github.com/chkndrp/hyperos-accessibility-fix
 support: https://github.com/chkndrp/hyperos-accessibility-fix/issues
 tags: [system, a11y, accessibility, hyperos, fix]
