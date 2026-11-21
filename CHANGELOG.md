@@ -1,3 +1,9 @@
+# 1.0.6
+- Moved the missing command check higher and added more commands 
+to prevent silent errors
+- Minor changes to the README
+- Added `module.yaml` for the KernelSU development portal
+
 # 1.0.5
 - Changed my username in the module files, and updated old links
 
