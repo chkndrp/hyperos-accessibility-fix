@@ -1,0 +1,16 @@
+schemaVersion: 1
+id: hyperos-accessibility-fix
+name: HyperOS Accessibility Fix
+summary: Stop HyperOS from randomly disabling accessibillity services
+description: README.md
+license: GPL-2.0
+homepage: https://github.com/chkndrp/hyperos-accessibility-fix
+support: https://github.com/chkndrp/hyperos-accessibility-fix/issues
+tags: [system, a11y, accessibility, hyperos, fix]
+authors:
+  - name: chkndrp
+    url: https://github.com/chkndrp
+compatibility:
+  androidMinApi: 34
+release:
+  assetPattern: "hyperos-accessibility-fix*.zip"
