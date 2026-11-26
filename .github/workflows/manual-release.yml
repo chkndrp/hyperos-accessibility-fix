@@ -19,18 +19,28 @@ jobs:
         run: |
           set -euo pipefail
 
-          version="$(awk -F= '$1 == "version" { print $2 }' module.prop)"
-          if [[ ! "$version" =~ ^[0-9]+([.][0-9]+)*$ ]]; then
-            echo "Invalid or missing version in module.prop: $version" >&2
-            exit 1
+          module_id="$(awk -F= '$1 == "id" { print $2 }' module/module.prop)"
+          version="$(awk -F= '$1 == "version" { print $2 }' module/module.prop)"
+
+          if [[ ! "$module_id" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]];
+            then
+              echo "Invalid or missing module ID in module.prop: $module_id" >&2
+              exit 1
           fi
 
-          archive="hyperos-accessibility-fix-${version}.zip"
-          zip -r "$RUNNER_TEMP/$archive" . \
-            -x './.git' './.git/*' \
-               './.github' './.github/*' \
-               './.shellcheckrc' './.gitignore' './.gitattributes'
-          cp "$RUNNER_TEMP/$archive" "$RUNNER_TEMP/hyperos-accessibility-fix.zip"
+          if [[ ! "$version" =~ ^[0-9]+([.][0-9]+)*$ ]];
+            then
+              echo "Invalid or missing version in module.prop: $version" >&2
+              exit 1
+          fi
+
+          archive="${module_id}-${version}.zip"
+          archive_perma="hyperos-accessibility-fix.zip"
+
+          python3 build.py
+
+          cp "build/$archive" "$RUNNER_TEMP/$archive"
+          cp "build/$archive_perma" "$RUNNER_TEMP/$archive_perma"
 
           awk -v version="$version" '
             $0 == "# " version { found = 1; next }
@@ -54,7 +64,7 @@ jobs:
 
           ## Download hint:
           NOTES
-          printf '✅ `hyperos-accessibility-fix-%s.zip` ✅\n' "$version"
+          printf '✅ `%s` ✅\n' "$archive"
           cat <<'NOTES'
           ❌ `xx source code.zip` ❌
 
@@ -65,8 +75,11 @@ jobs:
           NOTES
           } > "$RUNNER_TEMP/release-notes.md"
 
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+          {
+            echo "version=$version"
+            echo "archive=$archive"
+            echo "permalink=$archive_perma"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -77,5 +90,5 @@ jobs:
           body_path: ${{ runner.temp }}/release-notes.md
           files: |
             ${{ runner.temp }}/${{ steps.package.outputs.archive }}
-            ${{ runner.temp }}/hyperos-accessibility-fix.zip
+            ${{ runner.temp }}/${{ steps.package.outputs.permalink }}
           make_latest: true
