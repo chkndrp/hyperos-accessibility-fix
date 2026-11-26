@@ -43,32 +43,40 @@ D ActivityManager: Force removing proc 8855:com.urbandroid.lux:background/u0a415
 ```
 
 ## How it works
-This module installs a background script that monitors the `logcat` stream for accessibility update events 
+- This module installs a background script that monitors the `logcat` stream for accessibility update events 
 with minimal system overhead.
 
-On boot, it checks what accessibility services are enabled, and writes them to `a11y_watchlist.txt`. It also listens for signs of manual 
+- On boot, it checks what accessibility services are enabled, and writes them to `a11y_watchlist.txt`. It also listens for signs of manual 
 configuration changes (done by user in settings) and updates the watchlist automatically.
  
-When an accessibility update event is detected, the background script first checks if the device is in the Settings app (as mentioned above).
+- When an accessibility update event is detected, the background script first checks if the device is in the Settings app (as mentioned above).
 If not, the background script performs a verification of enabled accessibility services against the local `a11y_watchlist.txt`.
 And if the list doesn't match up, the changes are reverted instantly.
 
-This background script also runs at `OOM` score `-800` to prevent `LMKD` from killing it in the background. And if it still gets killed under memory pressure,
+- This background script also runs at `OOM` score `-800` to prevent `LMKD` from killing it in the background. And if it still gets killed under memory pressure,
 another (monitor) script (that runs at `-900`) is running in background to restart it (provided it didn't get killed aswell lol)
-
-## Why use background scripts, and not zygisk/xposed?
-On my device, these two frameworks cause a range of problems for some reason, so i decided to follow this approach instead.
-
-It's also more minimal this way, having no requirements at all.
 
 ## Note
 - When Ultra Battery Saver is turned on, the accessibility services will still keep running in the background
 - Force stopping an app via App Manager will not (permanently) remove it's accessibility permission anymore.
 So be careful at what you enable
+- You may ask why did i use background scripts and not `zygisk`/`xposed`. That's because these two frameworks cause
+a range of problems for me, so i decided to follow this no-requirement approach instead.
+
+## How do i build this from source?
+Just run the build script at the root of the repo. The minimum requirement for this is `~python3.10`:
+
+```shell
+python build.py
+```
+```shell
+# Created /home/user/module/build/hyperos-accessibility-fix-x.x.x.zip
+# Created /home/user/module/build/hyperos-accessibility-fix.zip (for permalink purposes)
+```
 
 ## Installation:
-* [Download the module archive here](https://github.com/chkndrp/hyperos-accessibility-fix/releases/latest/download/hyperos-accessibility-fix.zip). There is also a [mirror at SourceForge](https://sourceforge.net/projects/hyperos-accessibility-fix/)
-* Flash it in magisk app, or using command line
+- [Download the module archive here](https://github.com/chkndrp/hyperos-accessibility-fix/releases/latest/download/hyperos-accessibility-fix.zip). There is also a [mirror at SourceForge](https://sourceforge.net/projects/hyperos-accessibility-fix/)
+- Flash it in magisk app, or using command line
 
 ## Requirements
 - HyperOS 1.0+ (or any A14+ system)
