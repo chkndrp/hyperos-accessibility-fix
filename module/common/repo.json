@@ -1,0 +1,24 @@
+{
+    "root": {
+        "kernelsu": ">= 1.0.2",
+        "magisk": ">= 28.0"
+    },
+    "manager": {
+        "kernelsu": {
+            "min": 11986
+        },
+        "magisk": {
+            "min": 28000
+        }
+    },
+    "license": "GPL-2.0-only",
+    "categories": [
+        "Tweaks and Hacks",
+        "System",
+        "Misc"
+    ],
+    "readme": "https://raw.githubusercontent.com/chkndrp/hyperos-accessibility-fix/main/README.md",
+    "homepage": "https://github.com/chkndrp/hyperos-accessibility-fix",
+    "support": "https://github.com/chkndrp/hyperos-accessibility-fix/issues",
+    "donate": "https://ko-fi.com/chkndrp"
+}
